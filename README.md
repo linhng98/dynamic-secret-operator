@@ -19,6 +19,7 @@ spec:
       whitelist: "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
       prefix: "pass_"
       postfix: "_word"
+      backend: "kubernetes"
 ```
 
 ## Roadmap
