@@ -60,18 +60,26 @@ func (r *PlaintextReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	// Fetch the Plaintext crd
 	plaintextCrd := &secretv1alpha1.Plaintext{}
 	err := r.Get(ctx, req.NamespacedName, plaintextCrd)
+
 	if err != nil {
 		if errors.IsNotFound(err) {
 			// Request object not found, could have been deleted after reconcile request.
 			// Owned objects are automatically garbage collected. For additional cleanup logic use finalizers.
 			// Return and don't requeue
-			log.Info("crd plaintext %s has been delete", plaintextCrd.Name)
 			return ctrl.Result{}, nil
 		}
 		// Error reading the object - requeue the request.
 		log.Error(err, "Failed to get crd plaintext")
 		return ctrl.Result{}, err
 	}
+
+	defer func() {
+		plaintextCrd.Status.Phase = secretv1alpha1.PhaseError
+		err = r.Client.Status().Update(context.Background(), plaintextCrd)
+		if err != nil {
+			log.Error(err, "Status update failed")
+		}
+	}()
 
 	// Check if the secret already exists, if not create a new one
 	sec := &corev1.Secret{}
@@ -82,13 +90,23 @@ func (r *PlaintextReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		log.Info("Creating a new Secret", "Secret.Namespace", opaqueSec.Namespace, "Secret.Name", opaqueSec.Name)
 		err = r.Create(ctx, opaqueSec)
 		if err != nil {
+			plaintextCrd.Status.Phase = secretv1alpha1.PhaseError
 			log.Error(err, "Failed to create new Secret", "Secret.Namespace", opaqueSec.Namespace, "Secret.Name", opaqueSec.Name)
 			return ctrl.Result{}, err
 		}
-		// Secret created successfully - return and requeue
+		// Secret created successfully - set status then return and requeue
+
+		plaintextCrd.Status.Phase = secretv1alpha1.PhaseReady
+		err = r.Client.Status().Update(context.Background(), plaintextCrd)
+		if err != nil {
+			log.Error(err, "Status update failed")
+		}
 		return ctrl.Result{Requeue: true}, nil
 	} else if err != nil {
 		log.Error(err, "Failed to get Secret")
+		plaintextCrd.Status.Phase = secretv1alpha1.PhaseReady
+		_ = r.Client.Status().Update(context.Background(), plaintextCrd)
+
 		return ctrl.Result{}, err
 	}
 

@@ -1,6 +1,6 @@
 package v1alpha1
 
-// +kubebuilder:validation:Enum=Pending;Ready;Rotating;Terminating;error
+// +kubebuilder:validation:Enum=Pending;Ready;Rotating;Terminating;Error
 type Phase string
 
 const (

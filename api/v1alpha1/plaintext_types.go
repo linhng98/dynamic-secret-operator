@@ -34,12 +34,17 @@ type PlaintextSpec struct {
 
 // PlaintextStatus defines the observed state of Plaintext
 type PlaintextStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	// Phase - define observed sync phase of the Plaintext
+	// +kubebuilder:validation:Type: string
 	Phase Phase `json:"phase"`
+
+	// LastSyncedDate - define last synced date of the Plaintext
+	// +kubebuilder:validation:Type: string
+	// +kubebuilder:validation:Format: date-time
+	LastSyncedDate metav1.Time `json:"lastsynceddate"`
 }
 
-// +kubebuilder:validation:Optional
+//+kubebuilder:validation:Optional
 type PLaintextSecretSpec struct {
 	Key       string  `json:"key"`
 	Len       int     `json:"len,omitempty"`
@@ -49,11 +54,11 @@ type PLaintextSecretSpec struct {
 	Backend   Backend `json:"backend"`
 }
 
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
-//+kubebuilder:resource:scope=Namespaced,shortName=pt
-//+kubebuilder:printcolumn:name="Phase",type="string",JSONPath=".status.phase",description="Status Phase of the Secret"
-
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:scope=Namespaced,shortName=pt
+// +kubebuilder:printcolumn:name="Phase",type="string",JSONPath=".status.phase",description="Sync phase of the Secret"
+// +kubebuilder:printcolumn:name="Last Synced Date",type="date",JSONPath=".status.lastsynceddate"
 // Plaintext is the Schema for the plaintexts API
 type Plaintext struct {
 	metav1.TypeMeta   `json:",inline"`
