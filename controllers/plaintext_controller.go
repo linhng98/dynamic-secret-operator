@@ -74,7 +74,6 @@ func (r *PlaintextReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	}
 
 	defer func() {
-		plaintextCrd.Status.Phase = secretv1alpha1.PhaseError
 		err = r.Client.Status().Update(context.Background(), plaintextCrd)
 		if err != nil {
 			log.Error(err, "Status update failed")
@@ -97,6 +96,7 @@ func (r *PlaintextReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		// Secret created successfully - set status then return and requeue
 
 		plaintextCrd.Status.Phase = secretv1alpha1.PhaseReady
+		plaintextCrd.Status.LastSyncedDate = metav1.Now()
 		err = r.Client.Status().Update(context.Background(), plaintextCrd)
 		if err != nil {
 			log.Error(err, "Status update failed")
