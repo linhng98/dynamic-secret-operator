@@ -35,7 +35,6 @@ spec:
         name: manager
         securityContext:
           allowPrivilegeEscalation: false
-        imagePullPolicy: Always
         livenessProbe:
           httpGet:
             path: /healthz
