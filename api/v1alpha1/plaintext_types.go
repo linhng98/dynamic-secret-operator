@@ -36,18 +36,17 @@ type PlaintextSpec struct {
 type PlaintextStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-  Phase Phase `json:"phase"`
+	Phase Phase `json:"phase"`
 }
-
 
 // +kubebuilder:validation:Optional
 type PLaintextSecretSpec struct {
-	Key       string `json:"key"`
-	Len       int    `json:"len,omitempty"`
-	Whitelist string `json:"whitelist,omitempty"`
-	Prefix    string `json:"prefix,omitempty"`
-	Postfix   string `json:"postfix,omitempty"`
-  Backend   Backend `json:"backend"`
+	Key       string  `json:"key"`
+	Len       int     `json:"len,omitempty"`
+	Whitelist string  `json:"whitelist,omitempty"`
+	Prefix    string  `json:"prefix,omitempty"`
+	Postfix   string  `json:"postfix,omitempty"`
+	Backend   Backend `json:"backend"`
 }
 
 //+kubebuilder:object:root=true
