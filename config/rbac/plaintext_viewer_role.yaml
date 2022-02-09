@@ -1,0 +1,20 @@
+# permissions for end users to view plaintexts.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: plaintext-viewer-role
+rules:
+- apiGroups:
+  - secret.linhng98.com
+  resources:
+  - plaintexts
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - secret.linhng98.com
+  resources:
+  - plaintexts/status
+  verbs:
+  - get
