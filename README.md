@@ -22,6 +22,16 @@ spec:
       backend: "kubernetes"
 ```
 
+## Sequence diagram
+
+```mermaid
+sequenceDiagram
+PlainText->>dynamic-secret-operator: Created
+dynamic-secret-operator->>Kubernetes Secret: Created
+dynamic-secret-operator->>PlainText: Update PlainText Status
+dynamic-secret-operator->>PlainText: Watch change
+```
+
 ## Roadmap
 - [ ] (support binary secret)
 - [ ] (support RSA secret)
